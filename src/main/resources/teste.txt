@@ -1,0 +1,4 @@
+Group: com.lmc
+Artifact: spring-initializr
+Name: spring-initializr
+Description: Demo project for Spring Boot
