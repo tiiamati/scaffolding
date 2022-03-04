@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.nio.file.Paths;
 
 @Service
 public class ProjetoService {
@@ -14,18 +15,35 @@ public class ProjetoService {
     @Autowired
     private ArquivoService arquivoService;
 
+    @Autowired
+    private ZipService zipService;
+
     public Resource projeto(Projeto projeto) throws Exception {
         try {
-            File file = arquivoService.buscarArquivo("teste.txt");
+            File file = arquivoService.buscarArquivo("JAVA");
 
-            arquivoService.escrever(file, projeto);
+            if (file != null) {
+                percorrerArquivos(file);
+            }
 
-            Resource resource = new UrlResource(file.toPath().toUri());
+            String projetoZip = zipService.zip(file.getAbsolutePath());
+
+            Resource resource = new UrlResource(Paths.get(projetoZip).toUri());
             return resource;
         } catch (MalformedURLException e) {
             throw new Exception("Problemas ao gerar projeto ", e);
         }
     }
+
+    private void percorrerArquivos(File pastaAtual) {
+        for (File arquivoAtual: pastaAtual.listFiles()) {
+            System.out.println(arquivoAtual.getName());
+            if (arquivoAtual.listFiles() != null) {
+                percorrerArquivos(arquivoAtual);
+            }
+        }
+    }
+
 
     public String header(Resource resource) {
         StringBuilder header = new StringBuilder();
