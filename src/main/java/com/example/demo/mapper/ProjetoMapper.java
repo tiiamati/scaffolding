@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.mapper;
 
+import com.example.demo.domain.Projeto;
 import lombok.Builder;
 
 @Builder

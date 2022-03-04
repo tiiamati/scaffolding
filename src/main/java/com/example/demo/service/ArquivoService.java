@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.service;
 
+import com.example.demo.domain.Projeto;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
