@@ -35,36 +35,40 @@ public class ProjetoMapper {
             StringBuilder nomeProjetoFinal = new StringBuilder();
 
             for (String nomeProjeto : nomeProjetoArray) {
-                nomeProjetoFinal.append(StringUtils.capitalize(nomeProjeto));
+                nomeProjetoFinal.append(primeiraLetraMaiuscula(nomeProjeto));
             }
 
             return nomeProjetoFinal.toString();
         }
 
-        return valor;
+        return primeiraLetraMaiuscula(valor);
     }
 
-    private static String getGrupo(String value) {
-        return minusculo(substituirCaracteresEspeciaisMenosPonto(value));
+    private static String getGrupo(String valor) {
+        return minusculo(substituirCaracteresEspeciaisMenosPonto(valor));
     }
 
-    private static String getArtefato(String value) {
-        return minusculo(substituirCaracteresEspeciaisMenosPonto(value));
+    private static String getArtefato(String valor) {
+        return minusculo(substituirCaracteresEspeciaisMenosPonto(valor));
     }
 
-    private static String getNome(String value) {
-        return minusculo(substituirCaracteresEspeciaisMenosTraco(value));
+    private static String getNome(String valor) {
+        return minusculo(substituirCaracteresEspeciaisMenosTraco(valor));
     }
 
-    private static String substituirCaracteresEspeciaisMenosPonto(String value) {
-        return value.replaceAll(PATTERN_ONLY_STRINGS_AND_DOT, "");
+    private static String substituirCaracteresEspeciaisMenosPonto(String valor) {
+        return valor.replaceAll(PATTERN_ONLY_STRINGS_AND_DOT, "");
     }
 
-    private static String substituirCaracteresEspeciaisMenosTraco(String value) {
-        return value.replaceAll(PATTERN_ONLY_STRINGS_AND_DASH, "");
+    private static String substituirCaracteresEspeciaisMenosTraco(String valor) {
+        return valor.replaceAll(PATTERN_ONLY_STRINGS_AND_DASH, "");
     }
 
-    private static String minusculo(String value) {
-        return value.toLowerCase(Locale.ROOT);
+    private static String minusculo(String valor) {
+        return valor.toLowerCase(Locale.ROOT);
+    }
+
+    private static String primeiraLetraMaiuscula(String valor) {
+        return StringUtils.capitalize(valor);
     }
 }
