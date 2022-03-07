@@ -31,12 +31,13 @@ public class ProjetoService {
             if (projetoReferencia != null) {
 
                 // cria o caminho raiz do projeto
-                Path baseProjeto = pastaService.criarProjetoRaiz(projeto);
+                Path pastaRaizNovoProjeto = Path.of(buscarNomeProjeto(projeto));
+                Path novoProjeto = pastaService.criarPastaRaizProjeto(pastaRaizNovoProjeto, projeto.nome);
 
                 // percorre o projeto de referência
-                arquivoService.criarArquivos(projetoReferencia, baseProjeto, projeto);
+                arquivoService.criarArquivos(projetoReferencia, novoProjeto, projeto);
 
-                String projetoZip = zipService.zip(baseProjeto.toString());
+                String projetoZip = zipService.zip(novoProjeto.toString());
 
                 return new UrlResource(Paths.get(projetoZip).toUri());
             }
@@ -44,6 +45,10 @@ public class ProjetoService {
         } catch (MalformedURLException e) {
             throw new Exception("Problemas ao gerar projeto ", e);
         }
+    }
+
+    private String buscarNomeProjeto(Projeto projeto) {
+        return GeradorProjetoConst.PROJETO_REFERENCIA.concat(projeto.nome);
     }
 
     public String header(Resource resource) {

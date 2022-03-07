@@ -30,7 +30,8 @@ public class ArquivoService {
 
             // sempre vai entrar nesse if quando o arquivo for uma pasta com arquivos dentro, lembrando, pastas tambem são arquivos.
             if (pastaService.possuiArquivos(arquivoAtualProjetoReferencia)) {
-                novoProjeto = criarEstruturaPasta(novoProjeto, arquivoAtualProjetoReferencia, projeto);
+                novoProjeto = criarEstruturaPasta(variavelParaRenomear, nomeArquivo,
+                        projeto, novoProjeto, arquivoAtualProjetoReferencia);
             } else {
                 // somente quando não for uma pasta
                 copiarArquivoParaNovoDiretorio(arquivoAtualProjetoReferencia, novoProjeto);
@@ -39,16 +40,16 @@ public class ArquivoService {
         }
     }
 
-    private Path criarEstruturaPasta(Path novoProjeto, File arquivoAtualProjetoReferencia, Projeto projeto) throws Exception {
+    private Path criarEstruturaPasta(Optional<ParametroEnum> variavelParaRenomear, String nomeArquivo,
+                                     Projeto projeto, Path arquivoEmCriacao, File arquivoAtual) throws Exception {
 
-        novoProjeto = pastaService.criarCaminhoLogicoPasta(novoProjeto, arquivoAtualProjetoReferencia);
-        pastaService.criarPasta(novoProjeto);
+        arquivoEmCriacao = pastaService.criarPasta(variavelParaRenomear, projeto, nomeArquivo, arquivoEmCriacao);
 
         // recursividade
-        criarArquivos(arquivoAtualProjetoReferencia, novoProjeto, projeto);
+        criarArquivos(arquivoAtual, arquivoEmCriacao, projeto);
 
         // sim isso é necessário
-        return pastaService.voltarPastaAnterior(novoProjeto);
+        return pastaService.voltarPastaAnterior(arquivoEmCriacao);
     }
 
     private void copiarArquivoParaNovoDiretorio(File arquivoAtualProjetoReferencia, Path novoProjeto) throws IOException {
