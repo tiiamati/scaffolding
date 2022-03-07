@@ -16,7 +16,7 @@ public enum ParametroEnum {
         this.value = value;
     }
 
-    public static Optional<ParametroEnum> getParametroEnum(String value) {
+    public static Optional<ParametroEnum> buscarVariavelParaRenomear(String value) {
         return Arrays.stream(ParametroEnum.values())
                 .filter(parametroEnum -> value.contains(parametroEnum.value))
                 .findAny();

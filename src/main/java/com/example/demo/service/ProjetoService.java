@@ -16,13 +16,13 @@ import java.nio.file.Paths;
 public class ProjetoService {
 
     @Autowired
-    private ArquivoService arquivoService;
-
-    @Autowired
     private ZipService zipService;
 
     @Autowired
     private PastaService pastaService;
+
+    @Autowired
+    private ArquivoService arquivoService;
 
     public Resource gerarProjeto(Projeto projeto) throws Exception {
         try {
@@ -34,7 +34,7 @@ public class ProjetoService {
                 Path baseProjeto = pastaService.criarProjetoRaiz(projeto);
 
                 // percorre o projeto de referência
-                arquivoService.criarArquivos(projetoReferencia, baseProjeto);
+                arquivoService.criarArquivos(projetoReferencia, baseProjeto, projeto);
 
                 String projetoZip = zipService.zip(baseProjeto.toString());
 
