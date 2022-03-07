@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.domain.ParametroEnum;
 import com.example.demo.domain.Projeto;
+import com.example.demo.domain.SubstituirConteudoArquivoEnum;
+import com.example.demo.mapper.ApplicationMapper;
+import com.example.demo.mapper.PomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zeroturnaround.zip.commons.FileUtils;
@@ -35,6 +38,7 @@ public class ArquivoService {
             } else {
                 // somente quando não for uma pasta
                 copiarArquivoParaNovoDiretorio(arquivoAtualProjetoReferencia, novoProjeto);
+                alterarConteudoArquivos(nomeArquivo, novoProjeto, arquivoAtualProjetoReferencia, projeto);
                 renomearArquivo(variavelParaRenomear, arquivoAtualProjetoReferencia, projeto, novoProjeto);
             }
         }
@@ -81,6 +85,21 @@ public class ArquivoService {
 
     private void moverArquivo(Path source, String nomeArquivo) throws IOException {
         Files.move(source, source.resolveSibling(nomeArquivo));
+    }
+
+    public void alterarConteudoArquivos(String nomeArquivo, Path novoProjeto,
+                                        File arquivoAtualProjetoReferencia, Projeto projeto) throws Exception {
+
+        if (nomeArquivo.equals(SubstituirConteudoArquivoEnum.APPLICATION_JAVA.value)
+                || nomeArquivo.equals(SubstituirConteudoArquivoEnum.APPLICATION_JAVA_TESTE.value)) {
+            Path arquivo = buscarArquivoAtualDentroDoNovoProjeto(novoProjeto, arquivoAtualProjetoReferencia);
+            ApplicationMapper.escrever(arquivo.toFile(), projeto);
+        }
+
+        if (nomeArquivo.equals(SubstituirConteudoArquivoEnum.POM.value)) {
+            Path arquivo = buscarArquivoAtualDentroDoNovoProjeto(novoProjeto, arquivoAtualProjetoReferencia);
+            PomMapper.escrever(arquivo.toFile(), projeto);
+        }
     }
 
 }
