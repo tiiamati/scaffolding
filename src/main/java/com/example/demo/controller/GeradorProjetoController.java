@@ -27,7 +27,7 @@ public class GeradorProjetoController {
         try {
             Projeto projeto = ProjetoMapper.toModel(grupo, artefato, nome, descricao);
 
-            Resource resource = service.projeto(projeto);
+            Resource resource = service.gerarProjeto(projeto);
             String header = service.header(resource);
 
             return ResponseEntity.ok()

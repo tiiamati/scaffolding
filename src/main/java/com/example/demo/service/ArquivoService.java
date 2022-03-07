@@ -1,45 +1,46 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Projeto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zeroturnaround.zip.commons.FileUtils;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
 
 @Service
 public class ArquivoService {
 
-    private static final String PATH_RESOURCE = "src/main/resources/";
+    @Autowired
+    private PastaService pastaService;
 
-    public File buscarArquivo(String arquivo) {
-        return new File(PATH_RESOURCE.concat(arquivo));
-    }
+    public void criarArquivos(File projetoReferencia, Path novoProjeto) throws Exception {
+        for (File arquivoAtualProjetoReferencia: projetoReferencia.listFiles()) {
 
-    public void escrever(File arquivo, Projeto projeto) throws Exception {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo));
-
-            StringBuilder conteudo = new StringBuilder();
-
-            conteudo.append("Group: ")
-                    .append(projeto.grupo)
-                    .append("\n")
-                    .append("Artifact: ")
-                    .append(projeto.artefato)
-                    .append("\n")
-                    .append("Name: ")
-                    .append(projeto.nome)
-                    .append("\n")
-                    .append("Description: ")
-                    .append(projeto.descricao);
-
-            writer.write(conteudo.toString());
-            writer.flush();
-            writer.close();
-
-        } catch (Exception e) {
-            throw new Exception("Não foi possível escrever no arquivo", e);
+            // sempre vai entrar nesse if quando o arquivo for uma pasta com arquivos dentro, lembrando, pastas tambem são arquivos.
+            if (pastaService.possuiArquivos(arquivoAtualProjetoReferencia)) {
+                novoProjeto = criarEstruturaPasta(novoProjeto, arquivoAtualProjetoReferencia);
+            } else {
+                // somente quando não for uma pasta
+                copiarArquivoParaNovoDiretorio(arquivoAtualProjetoReferencia, novoProjeto);
+            }
         }
     }
+
+    private Path criarEstruturaPasta(Path novoProjeto, File arquivoAtualProjetoReferencia) throws Exception {
+
+        novoProjeto = pastaService.criarCaminhoLogicoPasta(novoProjeto, arquivoAtualProjetoReferencia);
+        pastaService.criarPasta(novoProjeto);
+
+        // recursividade
+        criarArquivos(arquivoAtualProjetoReferencia, novoProjeto);
+
+        // sim isso é necessário
+        return pastaService.voltarPastaAnterior(novoProjeto);
+    }
+
+    private void copiarArquivoParaNovoDiretorio(File arquivoAtualProjetoReferencia, Path novoProjeto) throws IOException {
+        FileUtils.copyFileToDirectory(arquivoAtualProjetoReferencia, novoProjeto.toFile());
+    }
+
 }
